@@ -1,13 +1,7 @@
-import 'package:exploraec/bienvenida_claude_design.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-// Colores del sistema de diseño "Andean Horizon" (Stitch).
-const Color kFondo = Color(0xFFE7FFF6);
-const Color kPrimario = Color(0xFF0D6E5A);
-const Color kPrimarioOscuro = Color(0xFF005444);
-const Color kTextoSecundario = Color(0xFF3F4945);
-const Color kCirculoIcono = Color(0xFFA0F3D9);
+import 'screens/home_screen.dart';
+import 'screens/map_placeholder_screen.dart';
+import 'screens/favorites_placeholder_screen.dart';
 
 void main() {
   runApp(const ExploraEcApp());
@@ -20,93 +14,48 @@ class ExploraEcApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'ExploraEC',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: kPrimario),
-        scaffoldBackgroundColor: kFondo,
-      ),
-      // Cambia el comentario para comparar los dos diseños:
-      home: const BienvenidaScreen(),
-      //home: const BienvenidaScreenClaudeDesign(),
+      home: const RootShell(),
     );
   }
 }
 
-class BienvenidaScreen extends StatelessWidget {
-  const BienvenidaScreen({super.key});
+/// Contenedor raíz con la barra de navegación inferior — Sesión 2.
+class RootShell extends StatefulWidget {
+  const RootShell({super.key});
+
+  @override
+  State<RootShell> createState() => _RootShellState();
+}
+
+class _RootShellState extends State<RootShell> {
+  int _indiceActual = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kFondo,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-          child: Column(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 112,
-                      height: 112,
-                      decoration: const BoxDecoration(
-                        color: kCirculoIcono,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.explore,
-                        size: 56,
-                        color: kPrimario,
-                      ),
-                    ),
-                    const SizedBox(height: 36),
-                    Text(
-                      'ExploraEC',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -1.2,
-                        height: 1.2,
-                        color: kPrimarioOscuro,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Descubre lugares increíbles cerca de ti',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 16,
-                        height: 1.5,
-                        color: kTextoSecundario,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kPrimario,
-                    foregroundColor: Colors.white,
-                    shape: const StadiumBorder(),
-                    elevation: 0,
-                    textStyle: GoogleFonts.plusJakartaSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  child: const Text('Empezar'),
-                ),
-              ),
-            ],
-          ),
-        ),
+      // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo. (cuerpo según pestaña)
+      // Por qué: un body fijo en HomeScreen ignoraría qué pestaña está
+      // activa — este switch sobre _indiceActual es lo que hace que
+      // BottomNavigationBar (más abajo) realmente cambie de contenido
+      // al tocar cada pestaña, en vez de solo resaltarla.
+      body: switch (_indiceActual) {
+        0 => const HomeScreen(),
+        1 => const MapPlaceholderScreen(),
+        _ => const FavoritesPlaceholderScreen(),
+      },
+
+      // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo. (barra inferior)
+      // Por qué: sin este widget no hay pestañas que tocar — junto con
+      // el switch de arriba, BottomNavigationBar alterna entre
+      // Inicio/Mapa/Favoritos sin apilarlas como haría Navigator.push.
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _indiceActual,
+        onTap: (i) => setState(() => _indiceActual = i),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favoritos'),
+        ],
       ),
     );
   }
