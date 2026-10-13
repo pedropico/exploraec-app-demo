@@ -118,9 +118,4 @@ class PlacesController extends GetxController {
     final pos = posicion.value;
     return pos == null ? null : distanciaAPlaceEnMetros(pos, lugar);
   }
-
-  List<Place> get lugaresOrdenados {
-    if (posicion.value == null) return lugares;
-    return [...lugares]..sort((a, b) => distanciaA(a)!.compareTo(distanciaA(b)!));
-  }
 }

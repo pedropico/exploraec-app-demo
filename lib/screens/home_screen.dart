@@ -58,7 +58,7 @@ class HomeScreen extends GetView<PlacesController> {
         if (controller.lugares.isEmpty) {
           return const EmptyView(mensaje: 'Todavía no hay lugares guardados');
         }
-        return _buildLista(controller.lugaresOrdenados);
+        return _buildLista(controller.lugares);
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Get.to(() => const AddPlaceScreen()),
