@@ -23,19 +23,27 @@ class _Servidor implements HttpClientAdapter {
   var _siguienteId = 1;
   bool tokenVencido = false;
 
-  ResponseBody _json(Object? cuerpo, int codigo, [Map<String, List<String>> h = const {}]) =>
+  ResponseBody _json(Object? cuerpo, int codigo,
+          [Map<String, List<String>> h = const {}]) =>
       ResponseBody.fromString(cuerpo == null ? '' : jsonEncode(cuerpo), codigo,
-          headers: {Headers.contentTypeHeader: ['application/json'], ...h});
+          headers: {
+            Headers.contentTypeHeader: ['application/json'],
+            ...h
+          });
 
   @override
-  Future<ResponseBody> fetch(RequestOptions o, Stream<Uint8List>? cuerpo, Future<void>? cancelar) async {
+  Future<ResponseBody> fetch(RequestOptions o, Stream<Uint8List>? cuerpo,
+      Future<void>? cancelar) async {
     peticiones.add(o);
-    final texto = cuerpo == null ? '' : utf8.decode((await cuerpo.toList()).expand((x) => x).toList());
+    final texto = cuerpo == null
+        ? ''
+        : utf8.decode((await cuerpo.toList()).expand((x) => x).toList());
     final ruta = o.path;
     if (ruta == '/usuarios/' && o.method == 'POST') {
       final b = jsonDecode(texto) as Map;
       if (usuarios.containsKey(b['email'])) {
-        return _json({'detail': 'El email ${b['email']} ya está registrado'}, 400);
+        return _json(
+            {'detail': 'El email ${b['email']} ya está registrado'}, 400);
       }
       usuarios[b['email'] as String] = b['password'] as String;
       return _json({'id': usuarios.length, 'email': b['email']}, 201);
@@ -43,27 +51,49 @@ class _Servidor implements HttpClientAdapter {
     if (ruta == '/usuarios/token') {
       final tipo = o.headers[Headers.contentTypeHeader].toString();
       if (!tipo.contains('application/x-www-form-urlencoded')) {
-        return _json({'detail': [{'type': 'missing', 'loc': ['body', 'username'], 'msg': 'Field required'}]}, 422);
+        return _json({
+          'detail': [
+            {
+              'type': 'missing',
+              'loc': ['body', 'username'],
+              'msg': 'Field required'
+            }
+          ]
+        }, 422);
       }
       final campos = Uri.splitQueryString(texto);
       if (usuarios[campos['username']] != campos['password']) {
         return _json({'detail': 'Email o contraseña incorrectos'}, 401);
       }
-      return _json({'access_token': 'tok-${campos['username']}', 'token_type': 'bearer'}, 200);
+      return _json(
+          {'access_token': 'tok-${campos['username']}', 'token_type': 'bearer'},
+          200);
     }
     // Desde aquí todo exige token válido.
     final auth = o.headers['Authorization'];
     if (tokenVencido || auth is! String || !auth.startsWith('Bearer tok-')) {
-      return _json({'detail': auth == null ? 'Not authenticated' : 'No se pudo validar las credenciales'}, 401);
+      return _json({
+        'detail': auth == null
+            ? 'Not authenticated'
+            : 'No se pudo validar las credenciales'
+      }, 401);
     }
     if (ruta == '/usuarios/me') {
-      return _json({'id': usuarios.keys.toList().indexOf(auth.substring(11)) + 1, 'email': auth.substring(11)}, 200);
+      return _json({
+        'id': usuarios.keys.toList().indexOf(auth.substring(11)) + 1,
+        'email': auth.substring(11)
+      }, 200);
     }
     if (ruta == '/gastos/categorias') {
-      return _json({'categorias': ['comida', 'transporte', 'entretenimiento', 'otros'], 'limite_por_categoria': 500.0}, 200);
+      return _json({
+        'categorias': ['comida', 'transporte', 'entretenimiento', 'otros'],
+        'limite_por_categoria': 500.0
+      }, 200);
     }
     if (ruta == '/gastos/' && o.method == 'GET') {
-      return _json(gastos, 200, {'x-total-count': ['${gastos.length}']});
+      return _json(gastos, 200, {
+        'x-total-count': ['${gastos.length}']
+      });
     }
     if (ruta == '/gastos/' && o.method == 'POST') {
       final b = jsonDecode(texto) as Map<String, dynamic>;
@@ -71,7 +101,10 @@ class _Servidor implements HttpClientAdapter {
           .where((g) => g['categoria'] == b['categoria'])
           .fold<double>(0, (suma, g) => suma + (g['monto'] as num));
       if (acumulado + (b['monto'] as num) > 500) {
-        return _json({'detail': "Este gasto supera el límite de 500.0 para la categoría '${b['categoria']}'"}, 400);
+        return _json({
+          'detail':
+              "Este gasto supera el límite de 500.0 para la categoría '${b['categoria']}'"
+        }, 400);
       }
       final nuevo = {'id': _siguienteId++, 'fecha': '2026-10-08', ...b};
       gastos.add(nuevo);
@@ -83,7 +116,10 @@ class _Servidor implements HttpClientAdapter {
       final i = gastos.indexWhere((g) => g['id'] == id);
       if (i < 0) return _json({'detail': 'El gasto $id no existe'}, 404);
       if (o.method == 'PATCH') {
-        gastos[i] = {...gastos[i], ...jsonDecode(texto) as Map<String, dynamic>};
+        gastos[i] = {
+          ...gastos[i],
+          ...jsonDecode(texto) as Map<String, dynamic>
+        };
         return _json(gastos[i], 200);
       }
       if (o.method == 'DELETE') {
@@ -105,7 +141,8 @@ Future<void> _esperar(bool Function() condicion) async {
 }
 
 void main() {
-  setUpAll(() => Hive.init(Directory.systemTemp.createTempSync('hive_s08').path));
+  setUpAll(
+      () => Hive.init(Directory.systemTemp.createTempSync('hive_s08').path));
 
   late _Servidor servidor;
   late ApiClient api;
@@ -115,9 +152,12 @@ void main() {
     Get.reset();
     Get.testMode = true;
     await Hive.deleteFromDisk();
-    FlutterSecureStorage.setMockInitialValues({if (tokenGuardado != null) 'access_token': tokenGuardado});
+    FlutterSecureStorage.setMockInitialValues(
+        {if (tokenGuardado != null) 'access_token': tokenGuardado});
     servidor = _Servidor();
-    api = Get.put(ApiClient(dio: Dio(BaseOptions(baseUrl: 'http://prueba'))..httpClientAdapter = servidor));
+    api = Get.put(ApiClient(
+        dio: Dio(BaseOptions(baseUrl: 'http://prueba'))
+          ..httpClientAdapter = servidor));
     auth = Get.put(AuthController());
     await _esperar(() => !auth.restaurando.value);
   }
@@ -130,14 +170,17 @@ void main() {
     return g;
   }
 
-  test('Paso 2 — el interceptor agrega «Authorization: Bearer» a cada petición', () async {
+  test('Paso 2 — el interceptor agrega «Authorization: Bearer» a cada petición',
+      () async {
     await montar();
     api.token = 'tok-a@b.com';
     await api.get('/usuarios/me');
-    expect(servidor.peticiones.last.headers['Authorization'], 'Bearer tok-a@b.com');
+    expect(servidor.peticiones.last.headers['Authorization'],
+        'Bearer tok-a@b.com');
   });
 
-  test('Paso 2 — iniciar sesión (formulario) guarda el token y deja el usuario', () async {
+  test('Paso 2 — iniciar sesión (formulario) guarda el token y deja el usuario',
+      () async {
     await montar();
     await auth.iniciarSesion('a@b.com', 'clave-1234');
     expect(auth.estaAutenticado, isTrue);
@@ -145,7 +188,8 @@ void main() {
     expect(await SecureTokenStorage().leer(), 'tok-a@b.com');
   });
 
-  test('Paso 2 — contraseña incorrecta muestra el mensaje del servidor', () async {
+  test('Paso 2 — contraseña incorrecta muestra el mensaje del servidor',
+      () async {
     await montar();
     await auth.iniciarSesion('a@b.com', 'otra-clave-1');
     expect(auth.estaAutenticado, isFalse);
@@ -177,7 +221,9 @@ void main() {
     Get.reset();
     FlutterSecureStorage.setMockInitialValues({'access_token': 'basura'});
     servidor = _Servidor();
-    api = Get.put(ApiClient(dio: Dio(BaseOptions(baseUrl: 'http://prueba'))..httpClientAdapter = servidor));
+    api = Get.put(ApiClient(
+        dio: Dio(BaseOptions(baseUrl: 'http://prueba'))
+          ..httpClientAdapter = servidor));
     auth = Get.put(AuthController());
     await _esperar(() => !auth.restaurando.value);
     await Future<void>.delayed(const Duration(milliseconds: 50));
@@ -200,13 +246,15 @@ void main() {
     expect(g.gastos.single.descripcion, 'Almuerzo en el Mercado Central');
   });
 
-  test('Paso 5 — el límite de 500 llega como ApiException con el detail', () async {
+  test('Paso 5 — el límite de 500 llega como ApiException con el detail',
+      () async {
     await montar();
     final g = await conSesion();
     await g.crear('Cena grande', 450, 'comida');
     expect(
       () => g.crear('Otra cena', 100, 'comida'),
-      throwsA(predicate((e) => e.toString().contains('supera el límite de 500.0'))),
+      throwsA(
+          predicate((e) => e.toString().contains('supera el límite de 500.0'))),
     );
   });
 
@@ -216,7 +264,8 @@ void main() {
     await g.crear('Taxi', 3.25, 'transporte');
     final id = g.gastos.single.id;
     await g.actualizar(id, {'monto': 4.0});
-    expect(servidor.peticiones.where((p) => p.method == 'PATCH').single.data, {'monto': 4.0});
+    expect(servidor.peticiones.where((p) => p.method == 'PATCH').single.data,
+        {'monto': 4.0});
     expect(g.gastos.single.monto, 4.0);
     expect(g.gastos.single.descripcion, 'Taxi');
   });
@@ -235,7 +284,8 @@ void main() {
     final g = await conSesion();
     await g.crear('Taxi', 3.25, 'transporte');
     servidor.gastos.clear(); // alguien lo borró desde otro lado
-    await expectLater(g.eliminar(1), throwsA(predicate((e) => e.toString().contains('no existe'))));
+    await expectLater(g.eliminar(1),
+        throwsA(predicate((e) => e.toString().contains('no existe'))));
     expect(g.gastos, isEmpty);
   });
 
@@ -251,7 +301,8 @@ void main() {
     expect(auth.avisoSesion.value, 'Tu sesión caducó, inicia sesión de nuevo.');
   });
 
-  test('Paso 8 — cerrar sesión borra la lista y la caja de Hive del usuario', () async {
+  test('Paso 8 — cerrar sesión borra la lista y la caja de Hive del usuario',
+      () async {
     await montar();
     final g = await conSesion();
     await g.crear('Taxi', 3.25, 'transporte');

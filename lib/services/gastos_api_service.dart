@@ -16,21 +16,26 @@ class GastosApiService {
     final r = await _client.get('/usuarios/me');
     final id = r.data is Map ? (r.data as Map)['id'] : null;
     if (id is! int) {
-      throw ApiException('Respuesta inesperada del servidor al leer tu perfil.');
+      throw ApiException(
+          'Respuesta inesperada del servidor al leer tu perfil.');
     }
     return id;
   }
 
   /// GET /gastos/?skip=&limit= — el total viene en la cabecera X-Total-Count.
   /// La barra final importa: sin ella el servidor responde 307.
-  Future<({List<Gasto> gastos, int total})> listarGastos({int skip = 0, int limit = 20}) async {
-    final r = await _client.get('/gastos/', query: {'skip': skip, 'limit': limit});
+  Future<({List<Gasto> gastos, int total})> listarGastos(
+      {int skip = 0, int limit = 20}) async {
+    final r =
+        await _client.get('/gastos/', query: {'skip': skip, 'limit': limit});
     final json = r.data;
     if (json is! List) {
       throw ApiException('Respuesta inesperada del servidor al listar gastos.');
     }
-    final gastos = json.whereType<Map<String, dynamic>>().map(Gasto.fromJson).toList();
-    final total = int.tryParse(r.headers.value('x-total-count') ?? '') ?? gastos.length;
+    final gastos =
+        json.whereType<Map<String, dynamic>>().map(Gasto.fromJson).toList();
+    final total =
+        int.tryParse(r.headers.value('x-total-count') ?? '') ?? gastos.length;
     return (gastos: gastos, total: total);
   }
 
@@ -40,7 +45,8 @@ class GastosApiService {
     final r = await _client.get('/gastos/categorias');
     final json = r.data;
     if (json is! Map || json['categorias'] is! List) {
-      throw ApiException('Respuesta inesperada del servidor al leer las categorías.');
+      throw ApiException(
+          'Respuesta inesperada del servidor al leer las categorías.');
     }
     return (
       categorias: (json['categorias'] as List).map((c) => '$c').toList(),
@@ -73,7 +79,8 @@ class GastosApiService {
     final r = await _client.get('/gastos/resumen');
     final json = r.data;
     if (json is! Map) {
-      throw ApiException('Respuesta inesperada del servidor al leer el resumen.');
+      throw ApiException(
+          'Respuesta inesperada del servidor al leer el resumen.');
     }
     return ResumenGastos.fromJson(Map<String, dynamic>.from(json));
   }

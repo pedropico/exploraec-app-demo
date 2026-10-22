@@ -45,7 +45,8 @@ class AuthController extends GetxController {
     cargando.value = true;
     mensajeError.value = '';
     try {
-      await _api.post('/usuarios/', data: {'email': email, 'password': password});
+      await _api
+          .post('/usuarios/', data: {'email': email, 'password': password});
       await iniciarSesion(email, password);
     } on ApiException catch (e) {
       mensajeError.value = e.mensaje;
@@ -118,7 +119,9 @@ class AuthController extends GetxController {
     // Su copia de gastos (la caja de Hive de la Sesión 7) y la lista en
     // pantalla también deben borrarse, o la siguiente persona que use este
     // teléfono las vería.
-    if (Get.isRegistered<GastosController>()) await Get.find<GastosController>().limpiar();
+    if (Get.isRegistered<GastosController>()) {
+      await Get.find<GastosController>().limpiar();
+    }
     await _almacen.borrar();
     _api.token = null;
     usuario.value = null;
@@ -133,7 +136,8 @@ class AuthController extends GetxController {
     cargando.value = true;
     mensajeError.value = '';
     try {
-      await _api.put('/usuarios/me/password', data: {'password_actual': actual, 'password_nueva': nueva});
+      await _api.put('/usuarios/me/password',
+          data: {'password_actual': actual, 'password_nueva': nueva});
       await cerrarSesion();
     } on ApiException catch (e) {
       mensajeError.value = e.mensaje;

@@ -13,6 +13,8 @@ class Validadores {
   /// El backend exige de 8 a 72 caracteres.
   static String? password(String? valor) {
     final largo = valor?.length ?? 0;
-    return (largo >= 8 && largo <= 72) ? null : 'La contraseña debe tener entre 8 y 72 caracteres';
+    return (largo >= 8 && largo <= 72)
+        ? null
+        : 'La contraseña debe tener entre 8 y 72 caracteres';
   }
 }

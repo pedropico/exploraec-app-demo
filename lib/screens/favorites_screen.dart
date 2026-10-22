@@ -26,7 +26,8 @@ class FavoritesScreen extends GetView<PlacesController> {
         }
         return ListView.builder(
           itemCount: controller.favoritos.length,
-          itemBuilder: (context, index) => PlaceCard(place: controller.favoritos[index]),
+          itemBuilder: (context, index) =>
+              PlaceCard(place: controller.favoritos[index]),
         );
       }),
     );

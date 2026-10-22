@@ -32,7 +32,8 @@ class GastosController extends GetxController {
   /// Categorías que aparecen en los gastos cargados, en orden de aparición.
   /// Por qué: el filtro solo ofrece categorías con gastos, así elegir una
   /// nunca deja la lista vacía.
-  List<String> get categoriasEnGastos => gastos.map((g) => g.categoria).toSet().toList();
+  List<String> get categoriasEnGastos =>
+      gastos.map((g) => g.categoria).toSet().toList();
 
   /// Los gastos que se muestran según el filtro elegido.
   List<Gasto> get gastosFiltrados {
@@ -41,7 +42,8 @@ class GastosController extends GetxController {
     return gastos.where((g) => g.categoria == categoria).toList();
   }
 
-  void seleccionarCategoria(String? categoria) => categoriaSeleccionada.value = categoria;
+  void seleccionarCategoria(String? categoria) =>
+      categoriaSeleccionada.value = categoria;
 
   /// `true` solo cuando la última carga exitosa vino de la caché local (el
   /// servidor no respondió): la UI lo usa para avisar «datos guardados».
@@ -109,7 +111,8 @@ class GastosController extends GetxController {
   Future<void> crear(String descripcion, double monto, String categoria) async {
     // Por qué: se manda el gasto al servidor y la pantalla se actualiza con lo
     // que el servidor guardó realmente (no se supone que salió bien).
-    await _api.crear({'descripcion': descripcion, 'monto': monto, 'categoria': categoria});
+    await _api.crear(
+        {'descripcion': descripcion, 'monto': monto, 'categoria': categoria});
     await _refrescar();
   }
 

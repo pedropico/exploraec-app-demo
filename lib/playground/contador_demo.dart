@@ -51,7 +51,9 @@ class _ContadorDemoState extends State<ContadorDemo> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('_veces', style: TextStyle(color: Colors.grey)),
-            Text('$_veces', style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold)),
+            Text('$_veces',
+                style:
+                    const TextStyle(fontSize: 48, fontWeight: FontWeight.bold)),
           ],
         ),
       ),

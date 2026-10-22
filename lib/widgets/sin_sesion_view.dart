@@ -28,14 +28,17 @@ class SinSesionView extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.lock_outline, size: 56, color: Theme.of(context).colorScheme.outline),
+                Icon(Icons.lock_outline,
+                    size: 56, color: Theme.of(context).colorScheme.outline),
                 const SizedBox(height: AppSpacing.md),
-                const Text('Inicia sesión para continuar.', textAlign: TextAlign.center),
+                const Text('Inicia sesión para continuar.',
+                    textAlign: TextAlign.center),
                 if (auth.avisoSesion.value.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.md),
                   Text(auth.avisoSesion.value,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.error)),
                 ],
                 const SizedBox(height: AppSpacing.lg),
                 FilledButton(

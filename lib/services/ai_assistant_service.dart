@@ -59,7 +59,8 @@ class RespuestaIA {
   const RespuestaIA({required this.respuesta, this.accion});
 
   factory RespuestaIA.fromJson(Map<String, dynamic> json) => RespuestaIA(
-        respuesta: (json['respuesta'] as String?) ?? 'El asistente no devolvió ninguna respuesta.',
+        respuesta: (json['respuesta'] as String?) ??
+            'El asistente no devolvió ninguna respuesta.',
         accion: AccionPropuesta.desdeJson(json['accion']),
       );
 }
@@ -96,11 +97,13 @@ class AiAssistantService {
       final r = await _dio.post(
         '/asistente',
         data: {'consulta': consulta, 'resumen': resumen.toJson()},
-        options: Options(headers: {if (token != null) 'Authorization': 'Bearer $token'}),
+        options: Options(
+            headers: {if (token != null) 'Authorization': 'Bearer $token'}),
       );
       final json = r.data;
       if (json is! Map) {
-        throw AsistenteException('La respuesta del asistente no tiene el formato esperado.');
+        throw AsistenteException(
+            'La respuesta del asistente no tiene el formato esperado.');
       }
       return RespuestaIA.fromJson(Map<String, dynamic>.from(json));
     } on DioException catch (e) {
@@ -108,9 +111,12 @@ class AiAssistantService {
         case DioExceptionType.connectionTimeout:
         case DioExceptionType.sendTimeout:
         case DioExceptionType.receiveTimeout:
-          throw AsistenteException('El asistente tardó demasiado en responder. Inténtalo de nuevo.');
+          throw AsistenteException(
+              'El asistente tardó demasiado en responder. Inténtalo de nuevo.');
         case DioExceptionType.badResponse:
-          final detail = e.response?.data is Map ? (e.response!.data as Map)['detail'] : null;
+          final detail = e.response?.data is Map
+              ? (e.response!.data as Map)['detail']
+              : null;
           throw AsistenteException(detail is String
               ? detail
               : 'El asistente respondió con un error (código ${e.response?.statusCode}).');

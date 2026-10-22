@@ -22,11 +22,13 @@ class ApiException implements Exception {
       case DioExceptionType.badResponse:
         return _desdeRespuesta(e.response!, e.requestOptions.path);
       default:
-        if (e.type == DioExceptionType.connectionError || e.error is SocketException) {
+        if (e.type == DioExceptionType.connectionError ||
+            e.error is SocketException) {
           return ApiException(
               'No hay conexión con el servidor. Revisa tu red y que el backend esté encendido.');
         }
-        return ApiException('No se pudo completar la petición. Inténtalo de nuevo.');
+        return ApiException(
+            'No se pudo completar la petición. Inténtalo de nuevo.');
     }
   }
 
@@ -39,10 +41,12 @@ class ApiException implements Exception {
       if (ruta == '/usuarios/token' && detail is String) {
         return ApiException(detail, statusCode: 401);
       }
-      return ApiException('Tu sesión caducó, inicia sesión de nuevo.', statusCode: 401);
+      return ApiException('Tu sesión caducó, inicia sesión de nuevo.',
+          statusCode: 401);
     }
     if (codigo >= 500) {
-      return ApiException('El servidor tuvo un problema. Inténtalo más tarde.', statusCode: codigo);
+      return ApiException('El servidor tuvo un problema. Inténtalo más tarde.',
+          statusCode: codigo);
     }
     // 400 / 403 / 404: `detail` es un texto en español. 422: `detail` es una LISTA.
     if (detail is String) return ApiException(detail, statusCode: codigo);
@@ -52,9 +56,11 @@ class ApiException implements Exception {
         final campo = loc is List && loc.isNotEmpty ? '${loc.last}' : 'dato';
         return '$campo: ${e['msg']}';
       });
-      return ApiException('Datos inválidos — ${partes.join('; ')}', statusCode: codigo);
+      return ApiException('Datos inválidos — ${partes.join('; ')}',
+          statusCode: codigo);
     }
-    return ApiException('La petición no pudo completarse (código $codigo).', statusCode: codigo);
+    return ApiException('La petición no pudo completarse (código $codigo).',
+        statusCode: codigo);
   }
 
   @override

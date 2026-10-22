@@ -1,115 +1,123 @@
 // ExploraEC — Sesión 2: fundamentos de Dart
 // Ejecutar con: dart run lib/playground/dart_basics.dart
 void main() {
-ejercicioVariables();
+  ejercicioVariables();
 // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo.
-print('--- Control de flujo: pendiente (descomenta ejercicioControlDeFlujo) ---');
-ejercicioControlDeFlujo();
+  print(
+      '--- Control de flujo: pendiente (descomenta ejercicioControlDeFlujo) ---');
+  ejercicioControlDeFlujo();
 // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo.
-print('--- Bucles: pendiente (descomenta ejercicioBucles) ---');
-ejercicioBucles();
+  print('--- Bucles: pendiente (descomenta ejercicioBucles) ---');
+  ejercicioBucles();
 // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo.
-print('--- Null safety: pendiente (descomenta ejercicioNullSafety) ---');
-ejercicioNullSafety();
+  print('--- Null safety: pendiente (descomenta ejercicioNullSafety) ---');
+  ejercicioNullSafety();
 // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo.
-print('--- Funciones: pendiente (descomenta ejercicioFunciones) ---');
-ejercicioFunciones();
+  print('--- Funciones: pendiente (descomenta ejercicioFunciones) ---');
+  ejercicioFunciones();
 // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo.
-print('--- Colecciones: pendiente (descomenta ejercicioColecciones) ---');
-ejercicioColecciones();
+  print('--- Colecciones: pendiente (descomenta ejercicioColecciones) ---');
+  ejercicioColecciones();
 // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo.
-print('--- Clases y herencia: pendiente (descomenta ejercicioClases) ---');
-ejercicioClases();
+  print('--- Clases y herencia: pendiente (descomenta ejercicioClases) ---');
+  ejercicioClases();
 }
+
 void ejercicioVariables() {
-var nombre = 'ExploraEC';
-final creado = DateTime.now();
-const version = '1.0.0';
-print('App: $nombre v$version — creado: $creado');
+  var nombre = 'ExploraEC';
+  final creado = DateTime.now();
+  const version = '1.0.0';
+  print('App: $nombre v$version — creado: $creado');
 }
+
 // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo.
 void ejercicioControlDeFlujo() {
-String categorizarDistancia(double metros) {
-if (metros < 500) {
-return 'Muy cerca';
-} else if (metros < 2000) {
-return 'Cerca';
-} else {
-return 'Lejos';
-}
+  String categorizarDistancia(double metros) {
+    if (metros < 500) {
+      return 'Muy cerca';
+    } else if (metros < 2000) {
+      return 'Cerca';
+    } else {
+      return 'Lejos';
+    }
+  }
+
+  print(categorizarDistancia(300));
+  print(categorizarDistancia(1200));
+  print(categorizarDistancia(5000));
 }
 
-print(categorizarDistancia(300));
-print(categorizarDistancia(1200));
-print(categorizarDistancia(5000));
-}
 // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo.
 void ejercicioBucles() {
-final nombresDeEjemplo = ['Parque Ejido', 'Café Central', 'Museo'];
-for (final nombre in nombresDeEjemplo) {
-print('Lugar: $nombre');
+  final nombresDeEjemplo = ['Parque Ejido', 'Café Central', 'Museo'];
+  for (final nombre in nombresDeEjemplo) {
+    print('Lugar: $nombre');
+  }
+
+  var contador = 0;
+  while (contador < 3) {
+    print('Vuelta número $contador');
+    contador++;
+  }
 }
 
-var contador = 0;
-while (contador < 3) {
-print('Vuelta número $contador');
-contador++;
-}
-}
 // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo.
 void ejercicioNullSafety() {
-String? apodo;
-print('Apodo antes de asignar: ${apodo ?? "(sin apodo)"}');
-apodo = 'Explo';
-print('Apodo ya asignado, longitud: ${apodo.length}');
+  String? apodo;
+  print('Apodo antes de asignar: ${apodo ?? "(sin apodo)"}');
+  apodo = 'Explo';
+  print('Apodo ya asignado, longitud: ${apodo.length}');
 }
+
 // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo.
 void ejercicioFunciones() {
-String saludar(String nombre, {String saludo = 'Hola', bool mayusculas = false})
-{
-final texto = '$saludo, $nombre';
-return mayusculas ? texto.toUpperCase() : texto;
+  String saludar(String nombre,
+      {String saludo = 'Hola', bool mayusculas = false}) {
+    final texto = '$saludo, $nombre';
+    return mayusculas ? texto.toUpperCase() : texto;
+  }
+
+  print(saludar('Ana'));
+  print(saludar('Ana', saludo: 'Bienvenida', mayusculas: true));
 }
 
-print(saludar('Ana'));
-print(saludar('Ana', saludo: 'Bienvenida', mayusculas: true));
-}
 // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo.
 void ejercicioColecciones() {
-final categorias = <String>{'Parque', 'Cafetería', 'Museo'};
-print('Categorías únicas: $categorias');
+  final categorias = <String>{'Parque', 'Cafetería', 'Museo'};
+  print('Categorías únicas: $categorias');
 
-final distancias = <String, double>{'Parque Ejido': 300, 'Museo': 1800};
-print('Distancia al Museo: ${distancias['Museo']} m');
-print('Distancia a un lugar inexistente: ${distancias['Playa']}');
+  final distancias = <String, double>{'Parque Ejido': 300, 'Museo': 1800};
+  print('Distancia al Museo: ${distancias['Museo']} m');
+  print('Distancia a un lugar inexistente: ${distancias['Playa']}');
 
-final nombres = ['Café Central', 'Parque Ejido', 'Museo'];
-final conCafe = nombres.where((n) => n.contains('Café')).toList();
-print('Lugares con "Café": $conCafe');
+  final nombres = ['Café Central', 'Parque Ejido', 'Museo'];
+  final conCafe = nombres.where((n) => n.contains('Café')).toList();
+  print('Lugares con "Café": $conCafe');
 }
+
 // TODO(sesion-02): borra la línea de abajo y descomenta el bloque completo.
 void ejercicioClases() {
-final ana = Persona('Ana', 28);
-print(ana.presentarse());
+  final ana = Persona('Ana', 28);
+  print(ana.presentarse());
 
-final consola = Consola();
-consola.notificar('Lugar agregado con éxito');
+  final consola = Consola();
+  consola.notificar('Lugar agregado con éxito');
 }
 
 class Persona {
-final String nombre;
-final int edad;
+  final String nombre;
+  final int edad;
 
-Persona(this.nombre, this.edad);
+  Persona(this.nombre, this.edad);
 
-String presentarse() => 'Soy $nombre y tengo $edad años';
+  String presentarse() => 'Soy $nombre y tengo $edad años';
 }
 
 abstract class Notificable {
-void notificar(String mensaje);
+  void notificar(String mensaje);
 }
 
 class Consola extends Notificable {
-@override
-void notificar(String mensaje) => print('Aviso: $mensaje');
+  @override
+  void notificar(String mensaje) => print('Aviso: $mensaje');
 }

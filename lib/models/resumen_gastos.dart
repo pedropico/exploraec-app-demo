@@ -15,7 +15,8 @@ class ResumenCategoria {
   });
 
   /// Defensivo a propósito: un campo faltante no debe tumbar toda la respuesta.
-  factory ResumenCategoria.fromJson(Map<String, dynamic> json) => ResumenCategoria(
+  factory ResumenCategoria.fromJson(Map<String, dynamic> json) =>
+      ResumenCategoria(
         categoria: (json['categoria'] as String?) ?? 'otros',
         total: (json['total'] as num?)?.toDouble() ?? 0,
         cantidad: (json['cantidad'] as num?)?.toInt() ?? 0,

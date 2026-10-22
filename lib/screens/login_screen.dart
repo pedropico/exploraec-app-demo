@@ -54,15 +54,20 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFormField(
                 controller: _email,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(labelText: 'Correo', border: OutlineInputBorder()),
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Escribe tu correo' : null,
+                decoration: const InputDecoration(
+                    labelText: 'Correo', border: OutlineInputBorder()),
+                validator: (v) => (v == null || v.trim().isEmpty)
+                    ? 'Escribe tu correo'
+                    : null,
               ),
               const SizedBox(height: AppSpacing.md),
               TextFormField(
                 controller: _password,
                 obscureText: true,
-                decoration: const InputDecoration(labelText: 'Contraseña', border: OutlineInputBorder()),
-                validator: (v) => (v == null || v.isEmpty) ? 'Escribe tu contraseña' : null,
+                decoration: const InputDecoration(
+                    labelText: 'Contraseña', border: OutlineInputBorder()),
+                validator: (v) =>
+                    (v == null || v.isEmpty) ? 'Escribe tu contraseña' : null,
               ),
               const SizedBox(height: AppSpacing.md),
               Obx(() => _auth.mensajeError.value.isEmpty
@@ -70,12 +75,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   : Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
                       child: Text(_auth.mensajeError.value,
-                          style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.error)),
                     )),
               Obx(() => FilledButton(
                     onPressed: _auth.cargando.value ? null : _enviar,
                     child: _auth.cargando.value
-                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2))
                         : const Text('Entrar'),
                   )),
               TextButton(
@@ -83,7 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: const Text('Crear una cuenta'),
               ),
               const SizedBox(height: AppSpacing.lg),
-              Text('Servidor: ${ApiConfig.baseUrl}', style: Theme.of(context).textTheme.bodySmall),
+              Text('Servidor: ${ApiConfig.baseUrl}',
+                  style: Theme.of(context).textTheme.bodySmall),
             ],
           ),
         ),

@@ -42,7 +42,8 @@ class GastosRepository {
       await _guardar(resultado.gastos);
       return (resultado.gastos, false);
     } on ApiException catch (e) {
-      final fallaDeInfraestructura = e.statusCode == null || e.statusCode! >= 500;
+      final fallaDeInfraestructura =
+          e.statusCode == null || e.statusCode! >= 500;
       if (!fallaDeInfraestructura) rethrow;
       final guardados = _leer();
       if (guardados == null) rethrow;

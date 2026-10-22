@@ -19,24 +19,58 @@ class _Backend implements HttpClientAdapter {
   static var _usuarios = 0;
   final idUsuario = ++_usuarios;
   final gastos = <Map<String, dynamic>>[
-    {'id': 1, 'descripcion': 'Almuerzo', 'monto': 6.5, 'categoria': 'comida', 'fecha': '2026-10-08'},
-    {'id': 2, 'descripcion': 'Bus a Baños', 'monto': 4, 'categoria': 'transporte', 'fecha': '2026-10-08'},
-    {'id': 3, 'descripcion': 'Cena', 'monto': 12, 'categoria': 'comida', 'fecha': '2026-10-09'},
+    {
+      'id': 1,
+      'descripcion': 'Almuerzo',
+      'monto': 6.5,
+      'categoria': 'comida',
+      'fecha': '2026-10-08'
+    },
+    {
+      'id': 2,
+      'descripcion': 'Bus a Baños',
+      'monto': 4,
+      'categoria': 'transporte',
+      'fecha': '2026-10-08'
+    },
+    {
+      'id': 3,
+      'descripcion': 'Cena',
+      'monto': 12,
+      'categoria': 'comida',
+      'fecha': '2026-10-09'
+    },
   ];
 
-  ResponseBody _json(Object? cuerpo, int codigo, [Map<String, List<String>> h = const {}]) =>
-      ResponseBody.fromString(jsonEncode(cuerpo), codigo,
-          headers: {Headers.contentTypeHeader: ['application/json'], ...h});
+  ResponseBody _json(Object? cuerpo, int codigo,
+          [Map<String, List<String>> h = const {}]) =>
+      ResponseBody.fromString(jsonEncode(cuerpo), codigo, headers: {
+        Headers.contentTypeHeader: ['application/json'],
+        ...h
+      });
 
   @override
-  Future<ResponseBody> fetch(RequestOptions o, Stream<Uint8List>? cuerpo, Future<void>? cancelar) async {
+  Future<ResponseBody> fetch(RequestOptions o, Stream<Uint8List>? cuerpo,
+      Future<void>? cancelar) async {
     final ruta = o.path;
-    if (ruta == '/usuarios/token') return _json({'access_token': 'tok-a@b.com', 'token_type': 'bearer'}, 200);
-    if (ruta == '/usuarios/me') return _json({'id': idUsuario, 'email': 'a@b.com'}, 200);
-    if (ruta == '/gastos/categorias') {
-      return _json({'categorias': ['comida', 'transporte', 'entretenimiento', 'otros'], 'limite_por_categoria': 500.0}, 200);
+    if (ruta == '/usuarios/token') {
+      return _json(
+          {'access_token': 'tok-a@b.com', 'token_type': 'bearer'}, 200);
     }
-    if (ruta == '/gastos/' && o.method == 'GET') return _json(gastos, 200, {'x-total-count': ['${gastos.length}']});
+    if (ruta == '/usuarios/me') {
+      return _json({'id': idUsuario, 'email': 'a@b.com'}, 200);
+    }
+    if (ruta == '/gastos/categorias') {
+      return _json({
+        'categorias': ['comida', 'transporte', 'entretenimiento', 'otros'],
+        'limite_por_categoria': 500.0
+      }, 200);
+    }
+    if (ruta == '/gastos/' && o.method == 'GET') {
+      return _json(gastos, 200, {
+        'x-total-count': ['${gastos.length}']
+      });
+    }
     return _json({'detail': 'ruta no prevista en la prueba: $ruta'}, 404);
   }
 
@@ -45,14 +79,17 @@ class _Backend implements HttpClientAdapter {
 }
 
 void main() {
-  setUpAll(() => Hive.init(Directory.systemTemp.createTempSync('hive_filtro').path));
+  setUpAll(
+      () => Hive.init(Directory.systemTemp.createTempSync('hive_filtro').path));
 
   /// Monta la app con el backend falso, la sesión iniciada y los gastos cargados.
   Future<void> montar() async {
     Get.reset();
     Get.testMode = true;
     FlutterSecureStorage.setMockInitialValues({});
-    Get.put(ApiClient(dio: Dio(BaseOptions(baseUrl: 'http://backend'))..httpClientAdapter = _Backend()));
+    Get.put(ApiClient(
+        dio: Dio(BaseOptions(baseUrl: 'http://backend'))
+          ..httpClientAdapter = _Backend()));
     final auth = Get.put(AuthController());
     await auth.iniciarSesion('a@b.com', 'clave-1234');
     final gastos = Get.put(GastosController());
@@ -67,7 +104,8 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('Al elegir «comida» solo se ven los gastos de comida', (tester) async {
+  testWidgets('Al elegir «comida» solo se ven los gastos de comida',
+      (tester) async {
     await abrirGastos(tester);
     expect(find.text('Bus a Baños'), findsOneWidget);
 

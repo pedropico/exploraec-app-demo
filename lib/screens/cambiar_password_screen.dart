@@ -54,15 +54,20 @@ class _CambiarPasswordScreenState extends State<CambiarPasswordScreen> {
               TextFormField(
                 controller: _actual,
                 obscureText: true,
-                decoration: const InputDecoration(labelText: 'Contraseña actual', border: OutlineInputBorder()),
-                validator: (v) => (v == null || v.isEmpty) ? 'Escribe tu contraseña actual' : null,
+                decoration: const InputDecoration(
+                    labelText: 'Contraseña actual',
+                    border: OutlineInputBorder()),
+                validator: (v) => (v == null || v.isEmpty)
+                    ? 'Escribe tu contraseña actual'
+                    : null,
               ),
               const SizedBox(height: AppSpacing.md),
               TextFormField(
                 controller: _nueva,
                 obscureText: true,
                 decoration: const InputDecoration(
-                    labelText: 'Contraseña nueva (8 a 72 caracteres)', border: OutlineInputBorder()),
+                    labelText: 'Contraseña nueva (8 a 72 caracteres)',
+                    border: OutlineInputBorder()),
                 validator: Validadores.password,
               ),
               const SizedBox(height: AppSpacing.md),
@@ -71,7 +76,8 @@ class _CambiarPasswordScreenState extends State<CambiarPasswordScreen> {
                   : Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
                       child: Text(_auth.mensajeError.value,
-                          style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.error)),
                     )),
               Obx(() => FilledButton(
                     onPressed: _auth.cargando.value ? null : _enviar,
